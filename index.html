@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Radix Math Lab: AI 시대, 정답을 넘어 수학적으로 생각하는 힘. 수학 탐색 그림책, 게임, 1:1 수학적 사고 진단 및 개인화 AI 학습 경험." />
+  <meta name="theme-color" content="#f8f5ef" />
+  <title>Radix Math Lab | 정답을 넘어, 수학적으로 생각하는 힘</title>
+  <style>
+    :root{--ink:#18324a;--muted:#53677a;--blue:#225db1;--darkblue:#163d76;--cream:#f8f5ef;--teal:#15776b;--line:#e4e5e2;--white:#fff;--shadow:0 14px 36px rgba(30,53,69,.07)}
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7} a{color:inherit;text-decoration:none} button{font:inherit;cursor:pointer} .wrap{width:min(1110px,calc(100% - 36px));margin:auto}
+    .topbar{background:#fffefb;border-bottom:1px solid var(--line)}.nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{font-size:1.13rem;font-weight:850;letter-spacing:.075em}.brand{display:inline-flex;align-items:center;gap:10px}.brand-logo{width:48px;height:48px;object-fit:contain;border-radius:50%;flex-shrink:0}.navlinks{display:flex;flex-wrap:wrap;gap:24px;color:#3a5166;font-weight:650;font-size:.88rem}.navlinks a:hover{text-decoration:underline;text-underline-offset:5px}
+    .hero{position:relative;isolation:isolate;overflow:hidden;margin:36px auto 55px;border:1px solid #e5e9e9;border-radius:30px;background:linear-gradient(137deg,#fffefb 0%,#eff9f6 58%,#ecf2ff 100%);box-shadow:var(--shadow);padding:clamp(28px,5.5vw,75px) clamp(20px,6.2vw,90px);text-align:center}.hero:before,.hero:after{content:"";z-index:-1;position:absolute;border-radius:50%;filter:blur(2px)}.hero:before{width:200px;height:200px;background:#fee7ac55;top:-110px;left:-50px}.hero:after{width:260px;height:260px;background:#bfe6de55;bottom:-160px;right:-40px}.eyebrow{margin:0 0 22px;color:var(--teal);letter-spacing:.2em;font-size:.78rem;font-weight:800}.hero h1{max-width:920px;margin:0 auto;font-size:clamp(1.6rem,3.45vw,2.75rem);line-height:1.4;letter-spacing:-.055em;word-break:keep-all}.hero .tagline{font-size:clamp(1.15rem,2.15vw,1.55rem);font-weight:850;color:var(--blue);margin:22px 0 22px}.hero-copy{max-width:750px;margin:0 auto;color:#455b68;font-size:clamp(.94rem,1.45vw,1.06rem);word-break:keep-all}.hero-copy p{margin:0 0 10px}.hero-copy p:last-child{margin-bottom:0}.consulting-box{max-width:710px;margin:35px auto 0;padding:25px 24px 23px;border-radius:24px;background:#fffefa;border:1px solid #e7e7de;box-shadow:0 9px 22px #234b5b0d}.consulting-box h2{font-size:clamp(1.17rem,2vw,1.5rem);line-height:1.5;letter-spacing:-.035em;margin:0 0 7px;word-break:keep-all}.consulting-box p{margin:0 0 18px;color:var(--muted);font-size:.94rem}.primary{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:13px;padding:13px 24px;background:var(--blue);color:white;font-weight:800;box-shadow:0 5px 0 var(--darkblue);transition:transform .14s,background .14s}.primary:hover{background:#174d99;transform:translateY(-2px)}.primary:active{transform:translateY(3px);box-shadow:0 2px 0 var(--darkblue)}.fineprint{display:block;font-size:.78rem;color:#647584;margin-top:13px}
+    .section{margin:0 auto 58px;scroll-margin-top:24px}.section-header{display:flex;align-items:center;gap:14px;margin:0 0 20px}.section-icon{display:grid;place-items:center;width:46px;height:46px;font-size:1.55rem;border-radius:15px;background:#e4f1ed}.section h2{font-size:clamp(1.4rem,2.8vw,1.9rem);letter-spacing:-.045em;margin:0}.section-sub{color:var(--muted);font-size:.94rem;margin:4px 0 0}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.card{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);transition:transform .18s,box-shadow .18s}.card:not(.coming):hover{transform:translateY(-4px);box-shadow:0 20px 45px rgba(30,53,69,.12)}.art{height:185px;display:grid;place-items:center;position:relative;overflow:hidden}.art .big{font-size:clamp(4rem,8vw,6rem);filter:drop-shadow(0 9px 8px #263f4420);transform:rotate(-4deg)}.art .tiny{position:absolute;font-size:2.1rem;opacity:.9}.art.book{background:linear-gradient(135deg,#dceffe,#fbecfb 55%,#fef1d8)}.art.delivery{background:linear-gradient(145deg,#dcf2fc,#e2f7e6)}.art.robot{background:linear-gradient(145deg,#dcf8e9,#e9f1ff)}.art .corner{right:14%;top:18%}.art .corner2{left:13%;bottom:15%}.card-body{padding:22px 23px 24px;display:flex;flex-direction:column;flex:1}.pill{align-self:flex-start;padding:3px 10px;font-size:.76rem;letter-spacing:.01em;font-weight:750;color:#1f756b;background:#eaf8f4;border-radius:999px}.card h3{font-size:1.23rem;letter-spacing:-.025em;margin:12px 0 5px}.card p{margin:0 0 18px;color:#5a6d79;font-size:.93rem;flex:1}.card-action{display:inline-flex;align-items:center;gap:8px;font-weight:850;color:var(--blue);font-size:.95rem}.card-action:after{content:'→';font-size:1.2rem}.coming .pill{background:#f3f1ed;color:#76736d}.coming .card-action{color:#818b96}.coming .card-action:after{content:''}.empty-card{display:flex;align-items:center;justify-content:center;text-align:center;min-height:265px;border:2px dashed #d8e0df;background:rgba(255,255,255,.42);border-radius:22px;color:#74848d;flex-direction:column;padding:20px}.empty-card .plus{font-size:2.2rem;line-height:1;margin-bottom:12px}.empty-card strong{color:#546d7a}
+    footer{border-top:1px solid var(--line);padding:25px 0 35px;color:#7b8990;font-size:.82rem;text-align:center}dialog{max-width:min(520px,calc(100% - 28px));border:1px solid #dfe4e4;border-radius:22px;padding:28px;box-shadow:0 25px 80px #0003;color:var(--ink)}dialog::backdrop{background:#1a3048a8;backdrop-filter:blur(3px)}dialog h2{margin:0 0 9px;line-height:1.4}dialog p{color:var(--muted);margin:0 0 14px}dialog ul{padding-left:22px;color:#435c6a}dialog .close{margin-top:15px;border:0;background:#eff3f6;color:var(--ink);border-radius:10px;padding:10px 17px;font-weight:750}
+    @media(max-width:680px){.nav{min-height:66px}.brand{font-size:.98rem}.brand-logo{width:40px;height:40px}.navlinks{gap:12px;font-size:.78rem}.hero{margin:20px auto 40px;padding:35px 18px}.consulting-box{padding:22px 14px}.cards{grid-template-columns:1fr;gap:16px}.art{height:165px}.section{margin-bottom:42px}.empty-card{min-height:140px}.section-header{gap:10px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.card,.primary{transition:none}}
+  </style>
+</head>
+<body>
+  <div class="topbar"><div class="wrap nav"><a class="brand" href="./index.html"><img class="brand-logo" src="./rml-logo.png" alt="Radix Math Lab 로고" width="48" height="48" />RADIX MATH LAB</a><nav class="navlinks" aria-label="사이트 메뉴"><a href="#storybooks">수학 그림책</a><a href="#games">수학 게임</a><a href="#consulting">사고 진단</a></nav></div></div>
+  <div class="wrap">
+    <header class="hero" id="consulting">
+      <p class="eyebrow">RADIX MATH LAB</p>
+      <h1>AI가 수학 문제를 푸는 시대,<br />우리 아이는 수학을 왜, 어떻게 배워야 할까요?</h1>
+      <p class="tagline">정답을 넘어, 수학적으로 생각하는 힘.</p>
+      <div class="hero-copy">
+        <p>Radix Math Lab은 아이가 수학을 통해 다양한 문제 상황을 어떻게 이해하고 해석하는지에 주목합니다.</p>
+        <p>다채로운 수학 탐색 활동을 통해 <strong>아이의 현재 수학적 사고를 심층적으로 분석하고</strong>, 그 이해를 바탕으로 개인화된 AI 학습 경험을 설계합니다.</p>
+      </div>
+      <div class="consulting-box">
+        <h2>우리 아이는 수학을 어떻게 이해하고 있을까요?</h2>
+        <p>1:1 수학적 사고 진단 및 개인 맞춤형 AI 학습 설계</p>
+        <button type="button" class="primary" id="consulting-open">우리 아이의 수학적 사고 진단하기 <span aria-hidden="true">↗</span></button>
+        <span class="fineprint">1:1 맞춤형 컨설팅 안내 · 서비스 준비 중</span>
+      </div>
+    </header>
+    <main>
+      <section class="section" id="storybooks" aria-labelledby="storybooks-title">
+        <div class="section-header"><span class="section-icon" aria-hidden="true">📖</span><div><h2 id="storybooks-title">수학 탐색 그림책</h2><p class="section-sub">이야기 속 상황을 바라보고, 생각하고, 수학적 관계를 발견해요.</p></div></div>
+        <div class="cards">
+          <article class="card coming"><div class="art book" aria-hidden="true"><span class="tiny corner">❄️</span><span class="big">🐧🚂</span><span class="tiny corner2">✨</span></div><div class="card-body"><span class="pill">준비 중</span><h3>펭귄들의 기차 여행</h3><p>세 칸의 기차로 떠나는 여행! 서로 다른 크기의 단위를 조합하며 생각을 펼쳐봐요.</p><span class="card-action">그림책 제작 중</span></div></article>
+          <div class="empty-card"><div class="plus" aria-hidden="true">＋</div><strong>새로운 수학 탐색 그림책</strong><span>새로운 이야기가 이곳에 추가될 예정이에요.</span></div>
+        </div>
+      </section>
+      <section class="section" id="games" aria-labelledby="games-title">
+        <div class="section-header"><span class="section-icon" aria-hidden="true">🎮</span><div><h2 id="games-title">수학 탐색 게임</h2><p class="section-sub">직접 조작하고 실험하며 다양한 해결 방법을 탐색해요.</p></div></div>
+        <div class="cards">
+          <a class="card" href="./robo-box-delivery.html"><div class="art delivery" aria-hidden="true"><span class="tiny corner">📦</span><span class="big">🚚</span><span class="tiny corner2">🤖</span></div><div class="card-body"><span class="pill">자릿값 · 구구단 · 단위 구성</span><h3>로보택 상자 배송</h3><p>10,000 · 1,000 · 100 · 10 · 1 상자를 조합해 주문 수량에 맞게 택배를 보내요.</p><span class="card-action">게임 시작하기</span></div></a>
+          <a class="card" href="./robot-treasure-adventure.html"><div class="art robot" aria-hidden="true"><span class="tiny corner">🍎</span><span class="big">🤖</span><span class="tiny corner2">💎</span></div><div class="card-body"><span class="pill">공간 추론 · 방향과 이동 계획</span><h3>로봇의 보물 탐험</h3><p>5×5 지도에서 앞으로 이동하는 버튼과 방향 전환을 활용해 보물에 도달하는 길을 탐색해요.</p><span class="card-action">게임 시작하기</span></div></a>
+        </div>
+      </section>
+    </main>
+  </div>
+  <footer>© <span id="year">2026</span> Radix Math Lab · 수학적 사고가 자라는 공간</footer>
+  <dialog id="consulting-dialog" aria-labelledby="consulting-dialog-title">
+    <h2 id="consulting-dialog-title">수학적 사고 진단 및 컨설팅</h2>
+    <p>Radix Math Lab은 정답률만으로 알기 어려운 아이의 수학적 이해를 다양한 탐색 활동에서 살펴보는 1:1 맞춤형 컨설팅을 준비하고 있습니다.</p>
+    <ul><li>수학적 상황을 어떻게 이해하고 해석하는지 관찰</li><li>현재 드러나는 사고의 특징과 강점 분석</li><li>분석을 바탕으로 개인화된 AI 학습 경험 설계</li></ul>
+    <p><strong>현재 예약 접수는 준비 중입니다.</strong> 예약 시스템이 마련되면 이 버튼을 예약 페이지와 연결할 수 있습니다.</p>
+    <button type="button" class="close" id="consulting-close">닫기</button>
+  </dialog>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const dialog = document.getElementById('consulting-dialog');
+    document.getElementById('consulting-open').addEventListener('click', () => dialog.showModal());
+    document.getElementById('consulting-close').addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+  </script>
+</body>
+</html>
