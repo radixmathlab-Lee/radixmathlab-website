@@ -1,0 +1,2410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>마법 자 탐험대 | 같은 길이, 다른 자! 무엇이 달라질까? - Radix Math Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-cream: #fdfaf3;
+      --ink-dark: #1e3246;
+      --ink-muted: #556b80;
+      --card-bg: rgba(255, 253, 248, 0.96);
+      --border-warm: #cbb393;
+      --indigo-main: #4f46e5;
+      --indigo-dark: #312e81;
+      --teal-main: #0d9488;
+      --amber-main: #f59e0b;
+      --rose-main: #e11d48;
+      --emerald-main: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      color: var(--ink-dark);
+      background:
+        radial-gradient(circle at 14% 14%, rgba(254, 240, 138, 0.5) 0%, transparent 45%),
+        radial-gradient(circle at 86% 20%, rgba(186, 230, 253, 0.55) 0%, transparent 50%),
+        radial-gradient(circle at 50% 90%, rgba(187, 247, 208, 0.55) 0%, transparent 60%),
+        #fdfaf3;
+      overflow-x: hidden;
+      padding-bottom: 3rem;
+    }
+
+    .app-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0.95rem 1.1rem;
+    }
+
+    /* =========================================================================
+       TOP HEADER BAR (Matches Radix Math Lab Games)
+       ========================================================================= */
+    .top-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      background: var(--card-bg);
+      border: 3px solid var(--border-warm);
+      border-radius: 26px;
+      padding: 0.95rem 1.25rem;
+      box-shadow: 0 10px 26px rgba(92, 64, 51, 0.08), inset 0 2px 0 #ffffff;
+      margin-bottom: 1.1rem;
+    }
+
+    .header-nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    .back-home-btn {
+      text-decoration: none;
+      padding: 0.55rem 1.05rem;
+      border-radius: 16px;
+      background: #4f46e5;
+      border: 2px solid #c7d2fe;
+      box-shadow: 0 4px 0 #312e81;
+      font-size: 0.9rem;
+      font-weight: 900;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      cursor: pointer;
+      transition: transform 0.12s ease, background-color 0.12s ease;
+      user-select: none;
+    }
+
+    .back-home-btn:hover {
+      background: #6366f1;
+    }
+
+    .back-home-btn:active {
+      transform: translateY(2px);
+    }
+
+    .menu-return-btn {
+      padding: 0.52rem 1rem;
+      border-radius: 16px;
+      background: #fff7ed;
+      border: 2px solid #fdba74;
+      box-shadow: 0 4px 0 #ea580c;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 900;
+      color: #9a3412;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      transition: transform 0.12s ease, background-color 0.12s ease;
+      user-select: none;
+    }
+
+    .menu-return-btn:hover {
+      background: #ffedd5;
+    }
+
+    .menu-return-btn:active {
+      transform: translateY(2px);
+    }
+
+    .header-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    .title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .title-icon-badge {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border: 2.5px solid #f59e0b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);
+    }
+
+    .game-title {
+      margin: 0;
+      font-family: 'Jua', sans-serif;
+      font-size: clamp(1.45rem, 3vw, 1.85rem);
+      font-weight: 400;
+      color: #1e3a5f;
+      letter-spacing: 0.01em;
+    }
+
+    .game-subtitle {
+      margin: 0.15rem 0 0 0;
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #5a6d7c;
+    }
+
+    /* =========================================================================
+       STORYBOOK CARDS & BUTTONS
+       ========================================================================= */
+    .story-card {
+      background: var(--card-bg);
+      border: 3.5px solid var(--border-warm);
+      border-radius: 28px;
+      padding: 1.35rem 1.4rem;
+      box-shadow: 0 14px 32px rgba(92, 64, 51, 0.1), inset 0 2px 0 #ffffff;
+      margin-bottom: 1.15rem;
+    }
+
+    .menu-hero-banner {
+      text-align: center;
+      padding: 1.5rem 1.2rem 1.8rem;
+      background: linear-gradient(180deg, #fffdf9 0%, #f4fbf7 100%);
+    }
+
+    .menu-illustration {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 999px;
+      background: #fef9c3;
+      border: 2.5px dashed #f59e0b;
+      font-size: 1.85rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .menu-welcome-title {
+      font-family: 'Jua', sans-serif;
+      font-size: clamp(1.5rem, 3.4vw, 2.1rem);
+      color: #1e3a5f;
+      margin: 0 0 0.45rem 0;
+    }
+
+    .menu-welcome-desc {
+      max-width: 620px;
+      margin: 0 auto 1.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    .menu-buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.1rem;
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    .menu-activity-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 1.45rem 1.2rem;
+      border-radius: 24px;
+      border: 3px solid transparent;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.16s ease;
+      user-select: none;
+    }
+
+    .menu-activity-btn:hover {
+      transform: translateY(-5px);
+    }
+
+    .menu-activity-btn:active {
+      transform: translateY(3px);
+    }
+
+    .menu-btn-1 {
+      background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+      border-color: #60a5fa;
+      box-shadow: 0 7px 0 #2563eb, 0 12px 24px rgba(37, 99, 235, 0.18);
+      color: #1e3a8a;
+    }
+
+    .menu-btn-2 {
+      background: linear-gradient(180deg, #fef2f2 0%, #ffe4e6 100%);
+      border-color: #fb7185;
+      box-shadow: 0 7px 0 #e11d48, 0 12px 24px rgba(225, 29, 72, 0.18);
+      color: #881337;
+    }
+
+    .menu-btn-3 {
+      background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%);
+      border-color: #34d399;
+      box-shadow: 0 7px 0 #059669, 0 12px 24px rgba(5, 150, 105, 0.18);
+      color: #064e3b;
+    }
+
+    .menu-step-pill {
+      font-size: 0.78rem;
+      font-weight: 900;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      margin-bottom: 0.65rem;
+    }
+
+    .menu-emoji-big {
+      font-size: 3rem;
+      line-height: 1.1;
+      margin-bottom: 0.6rem;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.12));
+    }
+
+    .menu-btn-title {
+      font-family: 'Jua', sans-serif;
+      font-size: 1.35rem;
+      margin: 0 0 0.45rem 0;
+    }
+
+    .menu-btn-sub {
+      font-size: 0.88rem;
+      font-weight: 700;
+      opacity: 0.9;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    /* =========================================================================
+       ACTIVITY HEADER & TOOLBAR
+       ========================================================================= */
+    .activity-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px dashed #e2d5c1;
+    }
+
+    .activity-badge-title {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-family: 'Jua', sans-serif;
+      font-size: 1.35rem;
+      color: #1e3a5f;
+      margin: 0;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .pill-action-btn {
+      padding: 0.5rem 0.95rem;
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: transform 0.12s ease, background-color 0.12s ease;
+      user-select: none;
+    }
+
+    .pill-action-btn:active {
+      transform: translateY(2px);
+    }
+
+    .btn-reset {
+      background: #f1f5f9;
+      color: #334155;
+      border: 2px solid #cbd5e1;
+      box-shadow: 0 3px 0 #94a3b8;
+    }
+
+    .btn-reset:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-new-problem {
+      background: #10b981;
+      color: #052e16;
+      border: 2px solid #6ee7b7;
+      box-shadow: 0 3px 0 #047857;
+    }
+
+    .btn-new-problem:hover {
+      background: #34d399;
+    }
+
+    .instruction-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      padding: 0.7rem 1rem;
+      border-radius: 18px;
+      font-size: 0.96rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 1rem;
+      line-height: 1.45;
+    }
+
+    .instruction-banner.info {
+      background: #f0f9ff;
+      border: 2px solid #bae6fd;
+      color: #0369a1;
+    }
+
+    .instruction-banner.success {
+      background: #ecfdf5;
+      border: 2px solid #6ee7b7;
+      color: #047857;
+    }
+
+    .instruction-banner.encourage {
+      background: #fffbeb;
+      border: 2px solid #fde68a;
+      color: #b45309;
+    }
+
+    /* =========================================================================
+       PROPORTIONAL MEASUREMENT STAGE (SHARED BY ACTIVITIES 1, 2, 3)
+       Exact 100% width = Q base units.
+       Every object and every ruler of size u is rendered at (u / Q) * 100% width!
+       ========================================================================= */
+    .measurement-stage-box {
+      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 3px solid #cbd5e1;
+      border-radius: 24px;
+      padding: 1.35rem 1.5rem;
+      margin-bottom: 1.15rem;
+      position: relative;
+    }
+
+    .stage-object-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.55rem;
+      flex-wrap: wrap;
+    }
+
+    .object-title-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.32rem 0.85rem;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      font-size: 0.88rem;
+      font-weight: 900;
+      color: #1e293b;
+    }
+
+    /* The Track Container whose exact width (100%) equals the object's fixed length Q */
+    .proportional-track-area {
+      position: relative;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0.25rem 0;
+    }
+
+    /* Boundary Guide Lines at 0% and 100% */
+    .boundary-guides {
+      position: relative;
+      width: 100%;
+      border-left: 3px dashed #64748b;
+      border-right: 3px dashed #64748b;
+      padding: 0.35rem 0;
+    }
+
+    .boundary-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      font-weight: 900;
+      color: #475569;
+      margin-bottom: 0.3rem;
+    }
+
+    /* Visual Object Being Measured (Always 100% of track width) */
+    .measured-object-bar {
+      width: 100%;
+      height: 64px;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.14), inset 0 3px 0 rgba(255, 255, 255, 0.55);
+      user-select: none;
+    }
+
+    /* Object Themes */
+    .obj-theme-bridge {
+      background: repeating-linear-gradient(
+        90deg,
+        #b45309 0px,
+        #b45309 22px,
+        #92400e 22px,
+        #92400e 26px
+      );
+      border: 3px solid #78350f;
+      color: #fef3c7;
+    }
+
+    .obj-theme-ribbon {
+      background: linear-gradient(135deg, #f43f5e 0%, #ec4899 50%, #a855f7 100%);
+      border: 3px solid #be185d;
+      color: #ffffff;
+    }
+
+    .obj-theme-dino {
+      background: linear-gradient(180deg, #d9f99d 0%, #84cc16 100%);
+      border: 3px solid #4d7c0f;
+      color: #1a2e05;
+    }
+
+    .obj-theme-choco {
+      background: repeating-linear-gradient(
+        90deg,
+        #5c3a21 0px,
+        #5c3a21 32px,
+        #3f2613 32px,
+        #3f2613 36px
+      );
+      border: 3px solid #2b180a;
+      color: #fde68a;
+    }
+
+    .obj-theme-train {
+      background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+      border: 3px solid #0369a1;
+      color: #ffffff;
+    }
+
+    .measured-object-title-overlay {
+      background: rgba(15, 23, 42, 0.65);
+      color: #ffffff;
+      padding: 0.28rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 900;
+      letter-spacing: 0.01em;
+      backdrop-filter: blur(2px);
+      margin: 0 auto;
+      z-index: 2;
+    }
+
+    /* Subtle Base Unit Tick Marks along the bottom of the object */
+    .base-unit-grid-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .base-unit-cell {
+      flex: 1;
+      border-right: 1px solid rgba(255, 255, 255, 0.25);
+      height: 100%;
+    }
+
+    .base-unit-cell:last-child {
+      border-right: none;
+    }
+
+    /* Ruler Placement Track (Directly below the object, 100% = Q units) */
+    .ruler-placement-lane {
+      position: relative;
+      width: 100%;
+      min-height: 58px;
+      margin-top: 0.7rem;
+      background: rgba(255, 255, 255, 0.75);
+      border: 2px dashed #94a3b8;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      overflow: visible;
+    }
+
+    .ruler-lane-placeholder {
+      width: 100%;
+      text-align: center;
+      font-size: 0.86rem;
+      font-weight: 800;
+      color: #64748b;
+      padding: 0.5rem;
+    }
+
+    /* Each Placed Ruler Segment inside the lane */
+    .placed-ruler-segment {
+      height: 48px;
+      border-radius: 10px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12), inset 0 2px 0 rgba(255, 255, 255, 0.65);
+      animation: popInRuler 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    @keyframes popInRuler {
+      0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.9);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .ruler-step-badge {
+      font-size: 0.82rem;
+      font-weight: 900;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.88);
+      color: #0f172a;
+      line-height: 1.25;
+      z-index: 2;
+      white-space: nowrap;
+    }
+
+    .ruler-internal-ticks {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 12px;
+      display: flex;
+      width: 100%;
+      pointer-events: none;
+    }
+
+    .ruler-tick-cell {
+      flex: 1;
+      border-right: 1.5px solid rgba(15, 23, 42, 0.35);
+      height: 100%;
+    }
+
+    .ruler-tick-cell:last-child {
+      border-right: none;
+    }
+
+    /* Ruler Color Palettes */
+    .ruler-color-0 {
+      background: linear-gradient(180deg, #fde047 0%, #facc15 100%);
+      border: 2.5px solid #ca8a04;
+      color: #422006;
+    }
+
+    .ruler-color-1 {
+      background: linear-gradient(180deg, #7dd3fc 0%, #38bdf8 100%);
+      border: 2.5px solid #0284c7;
+      color: #082f49;
+    }
+
+    .ruler-color-2 {
+      background: linear-gradient(180deg, #f9a8d4 0%, #f472b6 100%);
+      border: 2.5px solid #db2777;
+      color: #500724;
+    }
+
+    .ruler-color-3 {
+      background: linear-gradient(180deg, #6ee7b7 0%, #34d399 100%);
+      border: 2.5px solid #059669;
+      color: #022c22;
+    }
+
+    .ruler-color-4 {
+      background: linear-gradient(180deg, #c4b5fd 0%, #a78bfa 100%);
+      border: 2.5px solid #7c3aed;
+      color: #2e1065;
+    }
+
+    /* Ghost Preview of Next Ruler Placement */
+    .ghost-next-ruler {
+      height: 44px;
+      border-radius: 10px;
+      border: 2.5px dashed #3b82f6;
+      background: rgba(59, 130, 246, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #1d4ed8;
+      flex-shrink: 0;
+    }
+
+    /* =========================================================================
+       RULER SELECTION PALETTE (PROPORTIONAL SCALE)
+       ========================================================================= */
+    .ruler-palette-box {
+      background: #ffffff;
+      border: 2.5px solid #e2e8f0;
+      border-radius: 22px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .palette-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.85rem;
+      flex-wrap: wrap;
+    }
+
+    .palette-title {
+      font-size: 1rem;
+      font-weight: 900;
+      color: #1e293b;
+      margin: 0;
+    }
+
+    .ruler-options-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      width: 100%;
+    }
+
+    .ruler-option-row {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 16px;
+      border: 2.5px solid #e2e8f0;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+    }
+
+    .ruler-option-row:hover {
+      border-color: #93c5fd;
+      background: #f0f9ff;
+    }
+
+    .ruler-option-row.selected {
+      border-color: #2563eb;
+      background: #eff6ff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+
+    .ruler-option-label {
+      min-width: 115px;
+      font-size: 0.92rem;
+      font-weight: 900;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex-shrink: 0;
+    }
+
+    /* Container inside option row that has exact same proportional scale reference */
+    .ruler-option-scale-track {
+      flex: 1;
+      background: rgba(203, 213, 225, 0.35);
+      border-radius: 10px;
+      height: 40px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .ruler-option-bar {
+      height: 36px;
+      border-radius: 8px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 900;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* =========================================================================
+       PRIMARY INTERACTIVE ACTION CONTROLS
+       ========================================================================= */
+    .control-actions-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+
+    .big-play-btn {
+      padding: 0.85rem 1.6rem;
+      border-radius: 20px;
+      font-family: 'Jua', sans-serif;
+      font-size: 1.2rem;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.14s ease;
+      user-select: none;
+    }
+
+    .big-play-btn:hover:not(:disabled) {
+      transform: translateY(-3px);
+    }
+
+    .big-play-btn:active:not(:disabled) {
+      transform: translateY(3px);
+    }
+
+    .big-play-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-place-ruler {
+      background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+      color: #ffffff;
+      border: 2.5px solid #93c5fd;
+      box-shadow: 0 6px 0 #1d4ed8, 0 10px 20px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-remeasure {
+      background: linear-gradient(180deg, #fde047 0%, #f59e0b 100%);
+      color: #451a03;
+      border: 2.5px solid #fef08a;
+      box-shadow: 0 6px 0 #b45309, 0 10px 20px rgba(245, 158, 11, 0.22);
+    }
+
+    /* =========================================================================
+       MEASUREMENT RECORD CARDS & SIDE-BY-SIDE COMPARISON
+       ========================================================================= */
+    .records-comparison-box {
+      background: #fffbeb;
+      border: 2.5px solid #fcd34d;
+      border-radius: 22px;
+      padding: 1.1rem 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .records-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.65rem;
+    }
+
+    .record-card-item {
+      background: #ffffff;
+      border: 2px solid #fbbf24;
+      border-radius: 16px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      box-shadow: 0 4px 10px rgba(245, 158, 11, 0.1);
+      animation: popInRuler 0.25s ease;
+    }
+
+    .record-card-sentence {
+      font-size: 0.96rem;
+      font-weight: 900;
+      color: #1e293b;
+      margin: 0;
+    }
+
+    .record-card-math {
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #b45309;
+      background: #fef3c7;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      align-self: flex-start;
+    }
+
+    /* =========================================================================
+       ACTIVITY 2: CHARACTER CARDS & REFLECTION
+       ========================================================================= */
+    .question-spotlight-box {
+      text-align: center;
+      background: linear-gradient(135deg, #eff6ff 0%, #fef3c7 100%);
+      border: 3px solid #60a5fa;
+      border-radius: 22px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .question-spotlight-title {
+      font-family: 'Jua', sans-serif;
+      font-size: clamp(1.35rem, 2.8vw, 1.75rem);
+      color: #1e3a8a;
+      margin: 0;
+    }
+
+    .characters-compare-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .character-choice-card {
+      background: #ffffff;
+      border: 3px solid #cbd5e1;
+      border-radius: 24px;
+      padding: 1.2rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      user-select: none;
+    }
+
+    .character-choice-card:hover {
+      transform: translateY(-4px);
+      border-color: #60a5fa;
+      box-shadow: 0 10px 24px rgba(59, 130, 246, 0.15);
+    }
+
+    .character-choice-card.selected {
+      border-color: #4f46e5;
+      background: #eef2ff;
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.22);
+    }
+
+    .char-avatar-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: #fef3c7;
+      border: 3px solid #f59e0b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .char-name-badge {
+      font-family: 'Jua', sans-serif;
+      font-size: 1.25rem;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+
+    .char-speech-bubble {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 18px;
+      padding: 0.85rem 1rem;
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.45;
+      position: relative;
+      width: 100%;
+    }
+
+    .char-speech-highlight {
+      color: #e11d48;
+      font-size: 1.12rem;
+      font-weight: 900;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .reflection-prompt-box {
+      background: #f8fafc;
+      border: 2.5px solid #93c5fd;
+      border-radius: 22px;
+      padding: 1.15rem 1.25rem;
+      margin-bottom: 1.1rem;
+      animation: popInRuler 0.25s ease;
+    }
+
+    .reflection-input-row {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-top: 0.65rem;
+    }
+
+    .reflection-text-input {
+      flex: 1;
+      min-width: 220px;
+      padding: 0.7rem 0.95rem;
+      border-radius: 14px;
+      border: 2px solid #cbd5e1;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    /* =========================================================================
+       ACTIVITY 3: PREDICTION CHIPS
+       ========================================================================= */
+    .prediction-verify-box {
+      background: #f0fdf4;
+      border: 2.5px solid #86efac;
+      border-radius: 22px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      animation: popInRuler 0.25s ease;
+    }
+
+    .pred-btn-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-top: 0.6rem;
+    }
+
+    .pred-chip {
+      padding: 0.55rem 1rem;
+      border-radius: 14px;
+      border: 2px solid #cbd5e1;
+      background: #ffffff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+
+    .pred-chip.active {
+      border-color: #2563eb;
+      background: #dbeafe;
+      color: #1e3a8a;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+
+    /* Activity 2 Dedicated Feedback & Next Question Card */
+    .act2-feedback-result-card {
+      border-radius: 24px;
+      padding: 1.35rem 1.4rem;
+      margin-top: 1.15rem;
+      text-align: center;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
+      animation: popInRuler 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .act2-feedback-result-card.is-correct {
+      background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%);
+      border: 3px solid #10b981;
+      color: #064e3b;
+    }
+
+    .act2-feedback-result-card.is-encourage {
+      background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+      border: 3px solid #f59e0b;
+      color: #78350f;
+    }
+
+    .act2-feedback-sentence {
+      font-size: 1.12rem;
+      font-weight: 900;
+      line-height: 1.55;
+      margin: 0 0 1.1rem 0;
+      word-break: keep-all;
+    }
+
+    .act2-feedback-btn-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* Activity 3 Large Key Metrics Display (Total Length & Target Count) */
+    .act3-big-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .act3-metric-hero-card {
+      border-radius: 22px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+    }
+
+    .act3-metric-length {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border: 3px solid #3b82f6;
+      color: #1e3a8a;
+    }
+
+    .act3-metric-count {
+      background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+      border: 3px solid #f43f5e;
+      color: #881337;
+    }
+
+    .act3-metric-label {
+      font-size: 0.92rem;
+      font-weight: 900;
+      opacity: 0.9;
+      margin-bottom: 0.25rem;
+    }
+
+    .act3-metric-value {
+      font-family: 'Jua', sans-serif;
+      font-size: clamp(1.9rem, 4vw, 2.45rem);
+      line-height: 1.15;
+    }
+
+    @media (max-width: 640px) {
+      .measurement-stage-box {
+        padding: 1rem 0.85rem;
+      }
+      .ruler-option-label {
+        min-width: 90px;
+        font-size: 0.82rem;
+      }
+      .big-play-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- TOP HEADER -->
+    <header class="top-header">
+      <div class="header-nav-row">
+        <a
+          href="./index.html"
+          class="back-home-btn"
+          id="btn-home-link"
+          title="뒤로 가기"
+          onclick="return handleTopBackClick(event)"
+        >
+          <span>⬅️</span>
+          <span>뒤로 가기</span>
+        </a>
+
+        <button
+          type="button"
+          id="btn-return-menu"
+          class="menu-return-btn"
+          style="display: none;"
+          onclick="switchView('MENU')"
+        >
+          <span>🗺️</span>
+          <span>탐험 메뉴로 돌아가기</span>
+        </button>
+      </div>
+
+      <div class="header-title-row">
+        <div class="title-group">
+          <div class="title-icon-badge" aria-hidden="true">📏</div>
+          <div>
+            <h1 class="game-title">마법 자 탐험대</h1>
+            <p class="game-subtitle">같은 길이, 다른 자! 무엇이 달라질까?</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- =======================================================================
+         MAIN MENU VIEW
+         ======================================================================= -->
+    <main id="view-menu" class="story-card menu-hero-banner">
+      <div class="menu-illustration" aria-hidden="true">
+        <span>✨</span>
+        <span>📏</span>
+        <span>🌉</span>
+        <span>🦕</span>
+        <span>🍫</span>
+      </div>
+      <h2 class="menu-welcome-title">신비한 마법 자 탐험대에 오신 것을 환영해요!</h2>
+      <p class="menu-welcome-desc">
+        물체의 길이는 그대로인데, 재는 <strong>마법 자의 길이</strong>가 달라지면 어떻게 될까요?<br />
+        세 가지 재미있는 탐험을 하면서 마법 자의 비밀을 직접 발견해 보세요!
+      </p>
+
+      <div class="menu-buttons-grid">
+        <!-- Activity 1 Button -->
+        <button
+          type="button"
+          id="btn-open-act1"
+          class="menu-activity-btn menu-btn-1"
+          onclick="switchView('ACT1')"
+        >
+          <span class="menu-step-pill">탐험 1</span>
+          <span class="menu-emoji-big">📏✨</span>
+          <h3 class="menu-btn-title">마법 자를 알아보자!</h3>
+          <p class="menu-btn-sub">
+            서로 다른 길이의 마법 자로 같은 물체를 직접 재어 보고 기록을 비교해요.
+          </p>
+        </button>
+
+        <!-- Activity 2 Button -->
+        <button
+          type="button"
+          id="btn-open-act2"
+          class="menu-activity-btn menu-btn-2"
+          onclick="switchView('ACT2')"
+        >
+          <span class="menu-step-pill">탐험 2</span>
+          <span class="menu-emoji-big">🦊🐰</span>
+          <h3 class="menu-btn-title">누구 자가 더 길까? 짧을까?</h3>
+          <p class="menu-btn-sub">
+            자를 사용한 횟수만 듣고 누구의 마법 자가 더 긴지, 더 짧은지 추리해 봐요.
+          </p>
+        </button>
+
+        <!-- Activity 3 Button -->
+        <button
+          type="button"
+          id="btn-open-act3"
+          class="menu-activity-btn menu-btn-3"
+          onclick="switchView('ACT3')"
+        >
+          <span class="menu-step-pill">탐험 3</span>
+          <span class="menu-emoji-big">🎯🔍</span>
+          <h3 class="menu-btn-title">어떤 자가 필요할까?</h3>
+          <p class="menu-btn-sub">
+            원하는 횟수만큼 딱 맞게 재려면 몇 칸짜리 마법 자가 필요한지 찾아봐요.
+          </p>
+        </button>
+      </div>
+    </main>
+
+    <!-- =======================================================================
+         ACTIVITY 1 VIEW: 마법 자를 알아보자!
+         ======================================================================= -->
+    <section id="view-act1" class="story-card" style="display: none;" aria-label="마법 자를 알아보자">
+      <div class="activity-top-bar">
+        <h2 class="activity-badge-title">
+          <span>📏 탐험 1 · 마법 자를 알아보자!</span>
+        </h2>
+        <div class="toolbar-group">
+          <button type="button" id="act1-btn-reset" class="pill-action-btn btn-reset" onclick="resetAct1Measurement()">
+            <span>🔄</span>
+            <span>다시 재보기</span>
+          </button>
+          <button type="button" id="act1-btn-next" class="pill-action-btn btn-new-problem" onclick="generateAct1Round()">
+            <span>🎲</span>
+            <span>새로운 물체 재기</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="act1-banner" class="instruction-banner info" role="status" aria-live="polite">
+        아래에서 마법 자 하나를 고른 뒤, [자 한 번 놓기] 버튼을 눌러 끝까지 재어 보세요!
+      </div>
+
+      <!-- Proportional Measurement Stage -->
+      <div class="measurement-stage-box">
+        <div class="stage-object-label-row">
+          <span class="object-title-chip" id="act1-object-name">🌉 마법 나무 다리</span>
+          <span class="object-title-chip" id="act1-object-length-badge">전체 길이: 24칸</span>
+        </div>
+
+        <div class="proportional-track-area">
+          <div class="boundary-labels">
+            <span>출발 (0칸)</span>
+            <span id="act1-end-label">끝 (24칸)</span>
+          </div>
+          <div class="boundary-guides">
+            <!-- Fixed-length Object Bar -->
+            <div id="act1-object-bar" class="measured-object-bar obj-theme-bridge">
+              <div id="act1-base-grid" class="base-unit-grid-overlay"></div>
+              <span id="act1-object-overlay-text" class="measured-object-title-overlay">
+                마법 나무 다리 (전체 24칸)
+              </span>
+            </div>
+
+            <!-- Active Ruler Placement Lane -->
+            <div id="act1-ruler-lane" class="ruler-placement-lane"></div>
+          </div>
+        </div>
+
+        <!-- Step Placement Controls -->
+        <div class="control-actions-bar">
+          <button
+            type="button"
+            id="act1-btn-place"
+            class="big-play-btn btn-place-ruler"
+            onclick="placeAct1RulerOnce()"
+          >
+            <span>📏</span>
+            <span id="act1-btn-place-text">자 한 번 놓기 (+1번)</span>
+          </button>
+          <button
+            type="button"
+            class="big-play-btn btn-remeasure"
+            onclick="resetAct1Measurement()"
+          >
+            <span>🔄</span>
+            <span>다시 재보기</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Proportional Ruler Palette -->
+      <div class="ruler-palette-box">
+        <div class="palette-header">
+          <h3 class="palette-title">🎨 사용할 마법 자를 골라 보세요 (물체와 똑같은 비율로 그려져 있어요)</h3>
+          <span style="font-size: 0.82rem; font-weight: 800; color: #64748b;">
+            다른 자를 골라도 물체의 길이는 변하지 않아요!
+          </span>
+        </div>
+        <div id="act1-ruler-options" class="ruler-options-stack"></div>
+      </div>
+
+      <!-- Measurement Records Comparison -->
+      <div class="records-comparison-box">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+          <h3 class="palette-title" style="color: #92400e;">
+            📋 내가 잰 마법 자 기록 카드 (여러 자로 재어 보고 나란히 비교해 보세요!)
+          </h3>
+          <span id="act1-records-count" style="font-size: 0.84rem; font-weight: 900; color: #b45309;">
+            0개 자 측정 완료
+          </span>
+        </div>
+        <div id="act1-records-grid" class="records-grid"></div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         ACTIVITY 2 VIEW: 누구 자가 더 길까? 짧을까?
+         ======================================================================= -->
+    <section id="view-act2" class="story-card" style="display: none;" aria-label="누구 자가 더 길까 짧을까">
+      <div class="activity-top-bar">
+        <h2 class="activity-badge-title">
+          <span>🦊🐰 탐험 2 · 누구 자가 더 길까? 짧을까?</span>
+        </h2>
+      </div>
+
+      <!-- Question Banner -->
+      <div class="question-spotlight-box">
+        <p style="margin: 0 0 0.25rem 0; font-size: 0.9rem; font-weight: 800; color: #475569;">
+          두 친구가 <strong>똑같은 물체</strong>를 각자의 마법 자로 끝까지 쟀어요!
+        </p>
+        <h3 id="act2-question-heading" class="question-spotlight-title">
+          🤔 누구의 자가 더 길까?
+        </h3>
+      </div>
+
+      <div id="act2-banner" class="instruction-banner info" role="status" aria-live="polite">
+        두 친구의 이야기를 읽고, 알맞은 친구 카드를 골라 눌러 보세요! (자를 직접 보기 전에 먼저 생각해 봐요)
+      </div>
+
+      <!-- Object Stage (Rulers hidden until student chooses & confirms) -->
+      <div class="measurement-stage-box">
+        <div class="stage-object-label-row">
+          <span class="object-title-chip" id="act2-object-name">🎀 반짝이는 마법 리본</span>
+          <span class="object-title-chip" id="act2-object-length-badge">두 친구가 함께 잰 물체</span>
+        </div>
+
+        <div class="proportional-track-area">
+          <div class="boundary-labels">
+            <span>출발</span>
+            <span id="act2-end-label">끝</span>
+          </div>
+          <div class="boundary-guides">
+            <div id="act2-object-bar" class="measured-object-bar obj-theme-ribbon">
+              <div id="act2-base-grid" class="base-unit-grid-overlay"></div>
+              <span id="act2-object-overlay-text" class="measured-object-title-overlay">
+                반짝이는 마법 리본
+              </span>
+            </div>
+
+            <!-- Revealed Dual Comparison Lanes (Hidden before reveal!) -->
+            <div id="act2-reveal-stage" style="display: none; margin-top: 0.85rem;">
+              <div style="font-size: 0.84rem; font-weight: 900; color: #1e293b; margin-bottom: 0.3rem;" id="act2-lane-a-label"></div>
+              <div id="act2-ruler-lane-a" class="ruler-placement-lane" style="margin-top: 0; margin-bottom: 0.7rem;"></div>
+
+              <div style="font-size: 0.84rem; font-weight: 900; color: #1e293b; margin-bottom: 0.3rem;" id="act2-lane-b-label"></div>
+              <div id="act2-ruler-lane-b" class="ruler-placement-lane" style="margin-top: 0;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two Selectable Character Cards -->
+      <div class="characters-compare-grid">
+        <button
+          type="button"
+          id="act2-char-btn-0"
+          class="character-choice-card"
+          onclick="selectAct2Character(0)"
+        >
+          <div class="char-avatar-circle" id="act2-char-emoji-0">🦊</div>
+          <div class="char-name-badge" id="act2-char-name-0">여우 루루</div>
+          <div class="char-speech-bubble" id="act2-char-speech-0">
+            "나는 내 자를 <span class="char-speech-highlight">2번</span> 사용해서 길이를 쟀어!"
+          </div>
+        </button>
+
+        <button
+          type="button"
+          id="act2-char-btn-1"
+          class="character-choice-card"
+          onclick="selectAct2Character(1)"
+        >
+          <div class="char-avatar-circle" id="act2-char-emoji-1">🐰</div>
+          <div class="char-name-badge" id="act2-char-name-1">토끼 토토</div>
+          <div class="char-speech-bubble" id="act2-char-speech-1">
+            "나는 내 자를 <span class="char-speech-highlight">4번</span> 사용해서 길이를 쟀어!"
+          </div>
+        </button>
+      </div>
+
+      <!-- Optional Reflective Question Box (Appears after selecting a character, before revealing rulers) -->
+      <div id="act2-reflection-box" class="reflection-prompt-box" style="display: none;">
+        <div style="font-size: 1rem; font-weight: 900; color: #1e3a8a;">
+          💬 왜 그렇게 생각했어? (내 생각을 짧게 적어 보거나 바로 자를 확인해 볼 수 있어요!)
+        </div>
+        <div class="reflection-input-row">
+          <input
+            type="text"
+            id="act2-reflection-input"
+            class="reflection-text-input"
+            placeholder="예: 자를 더 적은 횟수로 쟀으니까 자가 더 길 것 같아요!"
+            onkeydown="if(event.key==='Enter') confirmAct2Reveal(false)"
+          />
+          <button
+            type="button"
+            id="act2-btn-confirm-reveal"
+            class="pill-action-btn btn-new-problem"
+            onclick="confirmAct2Reveal(false)"
+          >
+            <span>✨</span>
+            <span>생각 적고 두 자 비교해 보기</span>
+          </button>
+          <button
+            type="button"
+            id="act2-btn-skip-reveal"
+            class="pill-action-btn btn-reset"
+            onclick="confirmAct2Reveal(true)"
+          >
+            <span>⏭️</span>
+            <span>건너뛰고 자 확인하기</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Dedicated Feedback Sentence Card + [다음 문제] Button directly underneath (Shown after reveal) -->
+      <div id="act2-feedback-card" class="act2-feedback-result-card is-correct" style="display: none;">
+        <p id="act2-feedback-text" class="act2-feedback-sentence"></p>
+        <div class="act2-feedback-btn-row">
+          <button
+            type="button"
+            id="act2-btn-replay"
+            class="pill-action-btn btn-reset"
+            onclick="replayAct2Demonstration()"
+          >
+            <span>▶️</span>
+            <span>자로 재는 모습 다시 보기</span>
+          </button>
+          <button
+            type="button"
+            id="act2-btn-next-bottom"
+            class="big-play-btn btn-remeasure"
+            onclick="generateAct2Round()"
+          >
+            <span>➡️</span>
+            <span>다음 문제</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         ACTIVITY 3 VIEW: 어떤 자가 필요할까?
+         ======================================================================= -->
+    <section id="view-act3" class="story-card" style="display: none;" aria-label="어떤 자가 필요할까">
+      <div class="activity-top-bar">
+        <h2 class="activity-badge-title">
+          <span>🎯 탐험 3 · 어떤 자가 필요할까?</span>
+        </h2>
+        <div class="toolbar-group">
+          <button type="button" id="act3-btn-reset" class="pill-action-btn btn-reset" onclick="resetAct3Attempt()">
+            <span>🔄</span>
+            <span>다시 고르기</span>
+          </button>
+          <button type="button" id="act3-btn-next" class="pill-action-btn btn-new-problem" onclick="generateAct3Round()">
+            <span>🎲</span>
+            <span>새로운 문제</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Large Prominent Key Info Cards: 1) 전체 길이, 2) 목표 횟수 -->
+      <div class="act3-big-metrics-grid">
+        <div class="act3-metric-hero-card act3-metric-length">
+          <span class="act3-metric-label">📏 물체의 전체 길이</span>
+          <strong class="act3-metric-value" id="act3-big-length-value">24칸</strong>
+        </div>
+        <div class="act3-metric-hero-card act3-metric-count">
+          <span class="act3-metric-label">🎯 자를 사용할 목표 횟수</span>
+          <strong class="act3-metric-value" id="act3-big-count-value">4번</strong>
+        </div>
+      </div>
+
+      <!-- Target Goal Spotlight -->
+      <div class="question-spotlight-box">
+        <h3 id="act3-target-heading" class="question-spotlight-title">
+          "전체 길이 24칸인 물체를 정확히 4번만 재고 싶어! 어떤 자가 필요할까?"
+        </h3>
+      </div>
+
+      <div id="act3-banner" class="instruction-banner info" role="status" aria-live="polite">
+        아래 5개의 마법 자 중에서 하나를 고른 뒤, [재어보기]를 눌러 딱 맞는지 실험해 보세요!
+      </div>
+
+      <!-- Measurement Simulation Stage -->
+      <div class="measurement-stage-box">
+        <div class="stage-object-label-row">
+          <span class="object-title-chip" id="act3-object-name">🍫 달콤한 초콜릿 막대</span>
+          <span class="object-title-chip" id="act3-target-badge" style="font-size: 0.96rem; background: #fff1f2; border-color: #fda4af; color: #be123c;">
+            전체 24칸 · 목표 4번
+          </span>
+        </div>
+
+        <div class="proportional-track-area">
+          <div class="boundary-labels">
+            <span>출발 (0칸)</span>
+            <span id="act3-end-label">끝 (24칸)</span>
+          </div>
+          <div class="boundary-guides">
+            <div id="act3-object-bar" class="measured-object-bar obj-theme-choco">
+              <div id="act3-base-grid" class="base-unit-grid-overlay"></div>
+              <span id="act3-object-overlay-text" class="measured-object-title-overlay">
+                달콤한 초콜릿 막대 (전체 24칸)
+              </span>
+            </div>
+
+            <!-- Animated Ruler Placement Lane (Allows overflow display if m * u > Q) -->
+            <div id="act3-ruler-lane" class="ruler-placement-lane"></div>
+          </div>
+        </div>
+
+        <!-- Optional Prediction Before Measuring -->
+        <div id="act3-prediction-box" class="prediction-verify-box" style="display: none;">
+          <div style="font-size: 0.94rem; font-weight: 900; color: #166534;" id="act3-pred-prompt">
+            🤔 선택한 자로 목표 횟수만큼 재면 전체 길이와 딱 맞을까? 먼저 예상해 볼까요?
+          </div>
+          <div class="pred-btn-group">
+            <button type="button" class="pred-chip" id="act3-pred-fit" onclick="setAct3Prediction('딱 맞을 것 같아!')">
+              ⭕ 딱 맞을 것 같아!
+            </button>
+            <button type="button" class="pred-chip" id="act3-pred-short" onclick="setAct3Prediction('모자랄 것 같아!')">
+              ➖ 모자랄 것 같아!
+            </button>
+            <button type="button" class="pred-chip" id="act3-pred-long" onclick="setAct3Prediction('넘어갈 것 같아!')">
+              ➕ 넘어갈 것 같아!
+            </button>
+          </div>
+        </div>
+
+        <!-- Measure Action Button -->
+        <div class="control-actions-bar">
+          <button
+            type="button"
+            id="act3-btn-measure"
+            class="big-play-btn btn-place-ruler"
+            onclick="runAct3MeasurementSimulation()"
+            disabled
+          >
+            <span>📏</span>
+            <span id="act3-btn-measure-text">고른 자로 재어보기!</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 5 Proportional Ruler Options -->
+      <div class="ruler-palette-box">
+        <div class="palette-header">
+          <h3 class="palette-title">🔍 5개의 마법 자 중에서 알맞은 자를 하나 골라 보세요!</h3>
+          <span style="font-size: 0.82rem; font-weight: 800; color: #64748b;">
+            틀려도 괜찮아요! 여러 자를 직접 대어 보며 비교해 보세요.
+          </span>
+        </div>
+        <div id="act3-ruler-options" class="ruler-options-stack"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- =========================================================================
+       GAME ENGINE & MATHEMATICAL LOGIC (Vanilla JS, Zero External Dependencies)
+       ========================================================================= -->
+  <script>
+    // 1. Visual Object Themes Catalog
+    const OBJECT_THEMES = [
+      { id: 'bridge', nameKo: '마법 나무 다리', emoji: '🌉', cssClass: 'obj-theme-bridge' },
+      { id: 'ribbon', nameKo: '반짝이는 마법 리본', emoji: '🎀', cssClass: 'obj-theme-ribbon' },
+      { id: 'dino', nameKo: '공룡 발자국 산책길', emoji: '🦕', cssClass: 'obj-theme-dino' },
+      { id: 'choco', nameKo: '달콤한 초콜릿 막대', emoji: '🍫', cssClass: 'obj-theme-choco' },
+      { id: 'train', nameKo: '하늘빛 꼬마 기찻길', emoji: '🚂', cssClass: 'obj-theme-train' }
+    ];
+
+    // Valid Base Object Lengths Q in {12, 18, 24, 30, 36}
+    const VALID_OBJECT_LENGTHS = [12, 18, 24, 30, 36];
+
+    // Friendly Character Pairs for Activity 2
+    const CHARACTER_PAIRS = [
+      [
+        { name: '여우 루루', emoji: '🦊' },
+        { name: '토끼 토토', emoji: '🐰' }
+      ],
+      [
+        { name: '곰돌이 포포', emoji: '🐻' },
+        { name: '다람쥐 도도', emoji: '🐿️' }
+      ],
+      [
+        { name: '펭귄 피피', emoji: '🐧' },
+        { name: '강아지 코코', emoji: '🐶' }
+      ],
+      [
+        { name: '고양이 미미', emoji: '🐱' },
+        { name: '판다 판판', emoji: '🐼' }
+      ]
+    ];
+
+    // Helper: Get proper divisors of Q that make clean ruler sizes (2 <= u <= Q/2)
+    function getValidRulerDivisors(Q) {
+      const divs = [];
+      for (let u = 2; u <= Math.floor(Q / 2); u++) {
+        if (Q % u === 0) {
+          divs.push(u);
+        }
+      }
+      return divs;
+    }
+
+    // Helper: Build base unit grid cells inside an object bar
+    function renderBaseUnitCells(containerEl, Q) {
+      containerEl.innerHTML = '';
+      for (let i = 0; i < Q; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'base-unit-cell';
+        containerEl.appendChild(cell);
+      }
+    }
+
+    // Helper: Create a single proportional ruler segment DOM element
+    // Width is strictly (u / Q) * 100% so visual scale is 100% faithful to Q = u * m.
+    function createProportionalRulerSegment(u, Q, stepIndex, colorIndex, labelText) {
+      const seg = document.createElement('div');
+      seg.className = `placed-ruler-segment ruler-color-${colorIndex % 5}`;
+      seg.style.width = `${(u / Q) * 100}%`;
+
+      // Internal unit tick marks inside the ruler
+      const ticksWrap = document.createElement('div');
+      ticksWrap.className = 'ruler-internal-ticks';
+      for (let i = 0; i < u; i++) {
+        const tick = document.createElement('div');
+        tick.className = 'ruler-tick-cell';
+        ticksWrap.appendChild(tick);
+      }
+      seg.appendChild(ticksWrap);
+
+      const badge = document.createElement('span');
+      badge.className = 'ruler-step-badge';
+      badge.textContent = labelText || `${stepIndex}번 (${u}칸)`;
+      seg.appendChild(badge);
+
+      return seg;
+    }
+
+    // =========================================================================
+    // NAVIGATION BETWEEN MAIN MENU AND 3 ACTIVITIES
+    // =========================================================================
+    let currentView = 'MENU';
+
+    function handleTopBackClick(event) {
+      // When inside Activity 1, 2, or 3, clicking [⬅️ 뒤로 가기] returns to the "신비한 마법 자 탐험대에 오신 것을 환영해요!" main menu!
+      if (currentView !== 'MENU') {
+        if (event) event.preventDefault();
+        switchView('MENU');
+        return false;
+      }
+      // When already on the main menu, allow normal navigation back to ./index.html (Radix Math Lab home)
+      return true;
+    }
+
+    function switchView(viewName) {
+      currentView = viewName;
+      document.getElementById('view-menu').style.display = viewName === 'MENU' ? 'block' : 'none';
+      document.getElementById('view-act1').style.display = viewName === 'ACT1' ? 'block' : 'none';
+      document.getElementById('view-act2').style.display = viewName === 'ACT2' ? 'block' : 'none';
+      document.getElementById('view-act3').style.display = viewName === 'ACT3' ? 'block' : 'none';
+
+      const returnMenuBtn = document.getElementById('btn-return-menu');
+      returnMenuBtn.style.display = viewName === 'MENU' ? 'none' : 'inline-flex';
+    }
+
+    // =========================================================================
+    // ACTIVITY 1: 마법 자를 알아보자!
+    // Goal 1, 2, 3: Same object length Q, choose 3-4 rulers that divide Q,
+    // step-by-step placement, record cards ("○칸짜리 자를 ○번 사용했어요.")
+    // =========================================================================
+    let act1State = {
+      Q: 24,
+      theme: OBJECT_THEMES[0],
+      rulers: [2, 3, 4, 6],
+      selectedRulerIndex: 0,
+      placedCount: 0,
+      records: {} // rulerSize -> { u, m, colorIdx }
+    };
+    let act1LastQIndex = -1;
+
+    function generateAct1Round() {
+      // Pick a Q different from the previous one
+      let qIdx = Math.floor(Math.random() * VALID_OBJECT_LENGTHS.length);
+      if (qIdx === act1LastQIndex) {
+        qIdx = (qIdx + 1) % VALID_OBJECT_LENGTHS.length;
+      }
+      act1LastQIndex = qIdx;
+      const Q = VALID_OBJECT_LENGTHS[qIdx];
+      const theme = OBJECT_THEMES[qIdx % OBJECT_THEMES.length];
+
+      // Pick 3 or 4 divisors of Q
+      const allDivs = getValidRulerDivisors(Q);
+      let chosenRulers = allDivs.slice(0, 4);
+      if (allDivs.length > 4) {
+        // Pick 4 well-spread divisors (e.g. for 24: 2, 3, 4, 6 or 3, 4, 6, 8; for 36: 3, 4, 6, 9)
+        const startOffset = Math.floor(Math.random() * (allDivs.length - 3));
+        chosenRulers = allDivs.slice(startOffset, startOffset + 4);
+      }
+
+      act1State = {
+        Q,
+        theme,
+        rulers: chosenRulers,
+        selectedRulerIndex: 0,
+        placedCount: 0,
+        records: {}
+      };
+
+      renderAct1Screen();
+    }
+
+    function selectAct1Ruler(idx) {
+      if (idx === act1State.selectedRulerIndex) return;
+      act1State.selectedRulerIndex = idx;
+      act1State.placedCount = 0; // Reset current placements without changing the object!
+      const u = act1State.rulers[idx];
+      setAct1Banner(
+        'info',
+        `📏 ${u}칸짜리 마법 자를 골랐어요! [자 한 번 놓기] 버튼을 눌러 물체 끝까지 재어 보세요.`
+      );
+      renderAct1Screen();
+    }
+
+    function placeAct1RulerOnce() {
+      const { Q, rulers, selectedRulerIndex, placedCount } = act1State;
+      const u = rulers[selectedRulerIndex];
+      const maxPlacements = Q / u;
+
+      if (placedCount >= maxPlacements) {
+        return;
+      }
+
+      act1State.placedCount += 1;
+      const currentM = act1State.placedCount;
+
+      if (currentM === maxPlacements) {
+        // Completed measuring the entire object!
+        act1State.records[u] = {
+          u,
+          m: currentM,
+          colorIdx: selectedRulerIndex
+        };
+        setAct1Banner(
+          'success',
+          `🎉 측정 성공! "${u}칸짜리 자를 ${currentM}번 사용했어요." 다른 길이의 마법 자도 골라서 재어 볼까요?`
+        );
+      } else {
+        const covered = currentM * u;
+        setAct1Banner(
+          'info',
+          `📏 ${u}칸짜리 자를 ${currentM}번 놓았어요! (현재 ${covered}칸 측정 완료 · 끝까지 계속 놓아 보세요)`
+        );
+      }
+
+      renderAct1Screen();
+    }
+
+    function resetAct1Measurement() {
+      act1State.placedCount = 0;
+      const u = act1State.rulers[act1State.selectedRulerIndex];
+      setAct1Banner(
+        'info',
+        `🔄 자를 처음부터 다시 놓아 볼까요? [자 한 번 놓기] 버튼을 눌러 ${u}칸짜리 자로 재어 보세요!`
+      );
+      renderAct1Screen();
+    }
+
+    function setAct1Banner(type, text) {
+      const banner = document.getElementById('act1-banner');
+      banner.className = `instruction-banner ${type}`;
+      banner.textContent = text;
+    }
+
+    function renderAct1Screen() {
+      const { Q, theme, rulers, selectedRulerIndex, placedCount, records } = act1State;
+      const u = rulers[selectedRulerIndex];
+      const maxPlacements = Q / u;
+
+      // Update Object Bar (Visual width is ALWAYS 100%, invariant across ruler switches)
+      document.getElementById('act1-object-name').textContent = `${theme.emoji} ${theme.nameKo}`;
+      document.getElementById('act1-object-length-badge').textContent = `전체 길이: ${Q}칸 (고정)`;
+      document.getElementById('act1-end-label').textContent = `끝 (${Q}칸)`;
+
+      const objBar = document.getElementById('act1-object-bar');
+      objBar.className = `measured-object-bar ${theme.cssClass}`;
+      document.getElementById('act1-object-overlay-text').textContent = `${theme.nameKo} (전체 ${Q}칸)`;
+      renderBaseUnitCells(document.getElementById('act1-base-grid'), Q);
+
+      // Render Placed Rulers inside Lane
+      const lane = document.getElementById('act1-ruler-lane');
+      lane.innerHTML = '';
+
+      for (let i = 1; i <= placedCount; i++) {
+        const seg = createProportionalRulerSegment(
+          u,
+          Q,
+          i,
+          selectedRulerIndex,
+          `${i}번 (${u}칸)`
+        );
+        lane.appendChild(seg);
+      }
+
+      // If not yet complete, show a subtle ghost outline for the next placement
+      if (placedCount < maxPlacements) {
+        const ghost = document.createElement('div');
+        ghost.className = 'ghost-next-ruler';
+        ghost.style.width = `${(u / Q) * 100}%`;
+        ghost.textContent = placedCount === 0 ? `여기에 ${u}칸 자 놓기` : `+${u}칸`;
+        lane.appendChild(ghost);
+      }
+
+      // Update Place Button (Do NOT reveal maxPlacements m before the student finishes!)
+      const placeBtn = document.getElementById('act1-btn-place');
+      const placeBtnText = document.getElementById('act1-btn-place-text');
+      if (placedCount >= maxPlacements) {
+        placeBtn.disabled = true;
+        placeBtnText.textContent = `측정 완료! (${u}칸 자 × ${maxPlacements}번)`;
+      } else {
+        placeBtn.disabled = false;
+        placeBtnText.textContent = `${u}칸 자 한 번 놓기`;
+      }
+
+      // Render Proportional Ruler Options Palette
+      const optionsContainer = document.getElementById('act1-ruler-options');
+      optionsContainer.innerHTML = '';
+
+      rulers.forEach((rulerU, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.id = `act1-select-ruler-${rulerU}`;
+        btn.className = `ruler-option-row ${idx === selectedRulerIndex ? 'selected' : ''}`;
+        btn.onclick = () => selectAct1Ruler(idx);
+
+        const isDone = Boolean(records[rulerU]);
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'ruler-option-label';
+        labelDiv.innerHTML = `<span>📏 ${rulerU}칸 마법 자</span> ${isDone ? '<span style="color:#16a34a;">✔</span>' : ''}`;
+
+        const trackDiv = document.createElement('div');
+        trackDiv.className = 'ruler-option-scale-track';
+
+        const barDiv = document.createElement('div');
+        barDiv.className = `ruler-option-bar ruler-color-${idx % 5}`;
+        barDiv.style.width = `${(rulerU / Q) * 100}%`;
+        barDiv.textContent = `${rulerU}칸`;
+
+        // Add internal ticks to palette ruler
+        const ticksWrap = document.createElement('div');
+        ticksWrap.className = 'ruler-internal-ticks';
+        for (let t = 0; t < rulerU; t++) {
+          const tick = document.createElement('div');
+          tick.className = 'ruler-tick-cell';
+          ticksWrap.appendChild(tick);
+        }
+        barDiv.appendChild(ticksWrap);
+
+        trackDiv.appendChild(barDiv);
+        btn.appendChild(labelDiv);
+        btn.appendChild(trackDiv);
+        optionsContainer.appendChild(btn);
+      });
+
+      // Render Side-by-Side Record Cards
+      const recordsGrid = document.getElementById('act1-records-grid');
+      const recordEntries = Object.values(records).sort((a, b) => a.u - b.u);
+      document.getElementById('act1-records-count').textContent = `${recordEntries.length}개 자 측정 완료`;
+
+      if (recordEntries.length === 0) {
+        recordsGrid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; color: #78350f; font-size: 0.9rem; font-weight: 700; padding: 0.5rem;">
+            아직 끝까지 잰 자가 없어요. 마법 자를 끝까지 놓으면 여기에 기록 카드가 생겨요!
+          </div>
+        `;
+      } else {
+        recordsGrid.innerHTML = '';
+        recordEntries.forEach((rec) => {
+          const card = document.createElement('div');
+          card.className = 'record-card-item';
+          card.innerHTML = `
+            <p class="record-card-sentence">"${rec.u}칸짜리 자를 ${rec.m}번 사용했어요."</p>
+            <span class="record-card-math">자의 길이 ${rec.u}칸 × ${rec.m}번 = 전체 ${Q}칸</span>
+          `;
+          recordsGrid.appendChild(card);
+        });
+      }
+    }
+
+    // =========================================================================
+    // ACTIVITY 2: 누구 자가 더 길까? 짧을까?
+    // Goal 2: Larger units produce smaller numerical measures (u1 * m1 = u2 * m2 = Q).
+    // Do NOT initially show the characters' rulers.
+    // Ask "누구의 자가 더 길까?" or "누구의 자가 더 짧을까?"
+    // Optional reflection ("왜 그렇게 생각했어?") -> Reveal proportional rulers,
+    // dedicated feedback sentence card, and [다음 문제] button underneath!
+    // =========================================================================
+    let act2State = {
+      Q: 24,
+      theme: OBJECT_THEMES[1],
+      askType: 'LONGER', // 'LONGER' | 'SHORTER'
+      characters: [
+        { name: '여우 루루', emoji: '🦊', m: 2, u: 12 },
+        { name: '토끼 토토', emoji: '🐰', m: 4, u: 6 }
+      ],
+      selectedCharIndex: null,
+      revealed: false,
+      isMatch: false,
+      feedbackSentence: '',
+      explanation: ''
+    };
+    let act2TimerIds = [];
+
+    function clearAct2Timers() {
+      act2TimerIds.forEach((id) => clearTimeout(id));
+      act2TimerIds = [];
+    }
+
+    function generateAct2Round() {
+      clearAct2Timers();
+
+      const Q = VALID_OBJECT_LENGTHS[Math.floor(Math.random() * VALID_OBJECT_LENGTHS.length)];
+      const theme = OBJECT_THEMES[Math.floor(Math.random() * OBJECT_THEMES.length)];
+      const pairTemplate = CHARACTER_PAIRS[Math.floor(Math.random() * CHARACTER_PAIRS.length)];
+
+      // Valid iteration counts from {2, 3, 4, 6, 8, 12} that divide Q
+      const candidateCounts = [2, 3, 4, 6, 8, 12].filter((m) => Q % m === 0);
+      // Pick two distinct iteration counts m1 != m2
+      const idx1 = Math.floor(Math.random() * candidateCounts.length);
+      let idx2 = Math.floor(Math.random() * (candidateCounts.length - 1));
+      if (idx2 >= idx1) idx2 += 1;
+
+      const m0 = candidateCounts[idx1];
+      const m1 = candidateCounts[idx2];
+
+      const askType = Math.random() < 0.5 ? 'LONGER' : 'SHORTER';
+
+      act2State = {
+        Q,
+        theme,
+        askType,
+        characters: [
+          { name: pairTemplate[0].name, emoji: pairTemplate[0].emoji, m: m0, u: Q / m0 },
+          { name: pairTemplate[1].name, emoji: pairTemplate[1].emoji, m: m1, u: Q / m1 }
+        ],
+        selectedCharIndex: null,
+        revealed: false,
+        isMatch: false,
+        feedbackSentence: '',
+        explanation: ''
+      };
+
+      const banner = document.getElementById('act2-banner');
+      banner.className = 'instruction-banner info';
+      banner.textContent = '두 친구의 이야기를 읽고, 알맞은 친구 카드를 골라 눌러 보세요! (자를 직접 보기 전에 먼저 생각해 봐요)';
+
+      document.getElementById('act2-reflection-input').value = '';
+      renderAct2Screen();
+    }
+
+    function selectAct2Character(charIdx) {
+      if (act2State.revealed) return; // Lock character selection once revealed until [다음 문제] is clicked
+      act2State.selectedCharIndex = charIdx;
+      const chosen = act2State.characters[charIdx];
+      const questionWord = act2State.askType === 'LONGER' ? '더 길다' : '더 짧다';
+
+      const banner = document.getElementById('act2-banner');
+      banner.className = 'instruction-banner info';
+      banner.textContent = `💡 [${chosen.name}]의 자가 ${questionWord}고 생각했군요! 아래에서 이유를 적어 보거나 [건너뛰고 자 확인하기]를 눌러 보세요.`;
+
+      renderAct2Screen();
+    }
+
+    function confirmAct2Reveal(skipExplanation) {
+      if (act2State.selectedCharIndex === null) return;
+      act2State.explanation = skipExplanation
+        ? ''
+        : document.getElementById('act2-reflection-input').value.trim();
+      act2State.revealed = true;
+
+      const { characters, selectedCharIndex, askType, Q } = act2State;
+      const c0 = characters[0];
+      const c1 = characters[1];
+
+      const correctIndex =
+        askType === 'LONGER'
+          ? c0.u > c1.u
+            ? 0
+            : 1
+          : c0.u < c1.u
+          ? 0
+          : 1;
+
+      const isMatch = selectedCharIndex === correctIndex;
+      const winner = characters[correctIndex];
+      const other = characters[1 - correctIndex];
+      const compareWord = askType === 'LONGER' ? '더 길어요' : '더 짧아요';
+
+      act2State.isMatch = isMatch;
+      if (isMatch) {
+        act2State.feedbackSentence = `🎉 맞았어요! 같은 길이(${Q}칸)를 ${winner.name}는 ${winner.m}번(${winner.u}칸 자), ${other.name}는 ${other.m}번(${other.u}칸 자)으로 쟀으니 ${winner.name}의 자가 ${compareWord}!`;
+      } else {
+        act2State.feedbackSentence = `🔍 두 친구의 마법 자를 비교해 볼까요? 같은 길이(${Q}칸)를 ${winner.name}는 ${winner.m}번(${winner.u}칸 자), ${other.name}는 ${other.m}번(${other.u}칸 자)으로 쟀으니 ${winner.name}의 자가 ${compareWord}!`;
+      }
+
+      renderAct2Screen();
+      replayAct2Demonstration();
+    }
+
+    function replayAct2Demonstration() {
+      clearAct2Timers();
+      const { Q, characters } = act2State;
+      const laneA = document.getElementById('act2-ruler-lane-a');
+      const laneB = document.getElementById('act2-ruler-lane-b');
+      laneA.innerHTML = '';
+      laneB.innerHTML = '';
+
+      // Animate Character A's ruler placements
+      for (let i = 1; i <= characters[0].m; i++) {
+        const tId = setTimeout(() => {
+          const seg = createProportionalRulerSegment(
+            characters[0].u,
+            Q,
+            i,
+            1,
+            `${i}번 (${characters[0].u}칸)`
+          );
+          laneA.appendChild(seg);
+        }, (i - 1) * 320);
+        act2TimerIds.push(tId);
+      }
+
+      // Animate Character B's ruler placements
+      for (let i = 1; i <= characters[1].m; i++) {
+        const tId = setTimeout(() => {
+          const seg = createProportionalRulerSegment(
+            characters[1].u,
+            Q,
+            i,
+            2,
+            `${i}번 (${characters[1].u}칸)`
+          );
+          laneB.appendChild(seg);
+        }, (i - 1) * 320);
+        act2TimerIds.push(tId);
+      }
+    }
+
+    function renderAct2Screen() {
+      const { Q, theme, askType, characters, selectedCharIndex, revealed, isMatch, feedbackSentence } = act2State;
+
+      // Question title
+      const qHeading = document.getElementById('act2-question-heading');
+      qHeading.innerHTML =
+        askType === 'LONGER'
+          ? '🤔 누구의 마법 자가 <span style="color:#e11d48; text-decoration:underline;">더 길까?</span>'
+          : '🤔 누구의 마법 자가 <span style="color:#2563eb; text-decoration:underline;">더 짧을까?</span>';
+
+      // Top instruction banner is hidden once revealed so only the dedicated bottom feedback card is shown
+      const topBanner = document.getElementById('act2-banner');
+      topBanner.style.display = revealed ? 'none' : 'flex';
+
+      // Object Bar
+      document.getElementById('act2-object-name').textContent = `${theme.emoji} ${theme.nameKo}`;
+      document.getElementById('act2-object-length-badge').textContent = revealed
+        ? `전체 길이: ${Q}칸`
+        : '두 친구가 함께 잰 똑같은 물체';
+      document.getElementById('act2-end-label').textContent = revealed ? `끝 (${Q}칸)` : '끝';
+
+      const objBar = document.getElementById('act2-object-bar');
+      objBar.className = `measured-object-bar ${theme.cssClass}`;
+      document.getElementById('act2-object-overlay-text').textContent = revealed
+        ? `${theme.nameKo} (전체 ${Q}칸)`
+        : `${theme.nameKo} (같은 길이)`;
+      renderBaseUnitCells(document.getElementById('act2-base-grid'), Q);
+
+      // Character Cards
+      characters.forEach((ch, idx) => {
+        const btn = document.getElementById(`act2-char-btn-${idx}`);
+        btn.className = `character-choice-card ${selectedCharIndex === idx ? 'selected' : ''}`;
+        document.getElementById(`act2-char-emoji-${idx}`).textContent = ch.emoji;
+        document.getElementById(`act2-char-name-${idx}`).textContent = ch.name;
+
+        const speechEl = document.getElementById(`act2-char-speech-${idx}`);
+        if (!revealed) {
+          // NEVER reveal ruler length u before student chooses and confirms!
+          speechEl.innerHTML = `"나는 내 자를 <span class="char-speech-highlight">${ch.m}번</span> 사용해서 길이를 쟀어!"`;
+        } else {
+          speechEl.innerHTML = `"나는 <strong style="color:#2563eb;">${ch.u}칸짜리 자</strong>를 <span class="char-speech-highlight">${ch.m}번</span> 사용해서 ${Q}칸을 쟀어!"`;
+        }
+      });
+
+      // Reflection Box vs Revealed Dual Ruler Stage + Bottom Feedback Card with [다음 문제] button
+      const reflectionBox = document.getElementById('act2-reflection-box');
+      const revealStage = document.getElementById('act2-reveal-stage');
+      const feedbackCard = document.getElementById('act2-feedback-card');
+
+      if (selectedCharIndex !== null && !revealed) {
+        reflectionBox.style.display = 'block';
+      } else {
+        reflectionBox.style.display = 'none';
+      }
+
+      if (revealed) {
+        revealStage.style.display = 'block';
+        document.getElementById('act2-lane-a-label').textContent =
+          `${characters[0].emoji} ${characters[0].name}의 마법 자: ${characters[0].u}칸짜리 자 × ${characters[0].m}번 = ${Q}칸`;
+        document.getElementById('act2-lane-b-label').textContent =
+          `${characters[1].emoji} ${characters[1].name}의 마법 자: ${characters[1].u}칸짜리 자 × ${characters[1].m}번 = ${Q}칸`;
+
+        feedbackCard.style.display = 'block';
+        feedbackCard.className = `act2-feedback-result-card ${isMatch ? 'is-correct' : 'is-encourage'}`;
+        document.getElementById('act2-feedback-text').textContent = feedbackSentence;
+      } else {
+        revealStage.style.display = 'none';
+        feedbackCard.style.display = 'none';
+      }
+    }
+
+    // =========================================================================
+    // ACTIVITY 3: 어떤 자가 필요할까?
+    // Goal 3: Given fixed length Q and target count m, infer unit size u = Q / m.
+    // Every problem MUST have exactly one correct ruler option (verified programmatically).
+    // Student selects 1 of 5 proportional rulers, predicts, clicks "재어보기",
+    // watches animated repeated placement, and can try other rulers freely.
+    // =========================================================================
+    let act3State = {
+      Q: 24,
+      targetM: 4,
+      correctU: 6,
+      options: [2, 3, 4, 6, 8],
+      theme: OBJECT_THEMES[3],
+      selectedU: null,
+      prediction: null,
+      isAnimating: false,
+      solved: false
+    };
+    let act3TimerIds = [];
+
+    function clearAct3Timers() {
+      act3TimerIds.forEach((id) => clearTimeout(id));
+      act3TimerIds = [];
+    }
+
+    function generateAct3Round() {
+      clearAct3Timers();
+
+      const Q = VALID_OBJECT_LENGTHS[Math.floor(Math.random() * VALID_OBJECT_LENGTHS.length)];
+      const theme = OBJECT_THEMES[Math.floor(Math.random() * OBJECT_THEMES.length)];
+
+      // Valid target measurement counts m (where correctU = Q / m is an integer >= 2)
+      const validDivs = getValidRulerDivisors(Q); // possible integer values for correctU
+      const correctU = validDivs[Math.floor(Math.random() * validDivs.length)];
+      const targetM = Q / correctU;
+
+      // Build 5 distinct whole-number ruler options including exactly one correctU
+      const candidatePool = [2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 18].filter(
+        (u) => u < Q && u !== correctU
+      );
+      // Sort distractors by closeness to correctU so choices require genuine reasoning
+      candidatePool.sort((a, b) => Math.abs(a - correctU) - Math.abs(b - correctU));
+      const distractors = candidatePool.slice(0, 4);
+      const options = [correctU, ...distractors].sort((a, b) => a - b);
+
+      // Programmatic Mathematical Verification (Rule 5 & 10)
+      const matchingCorrectOptions = options.filter((u) => u * targetM === Q);
+      if (matchingCorrectOptions.length !== 1 || matchingCorrectOptions[0] !== correctU) {
+        console.error('Invalid Activity 3 problem generated');
+        return;
+      }
+
+      act3State = {
+        Q,
+        targetM,
+        correctU,
+        options,
+        theme,
+        selectedU: null,
+        prediction: null,
+        isAnimating: false,
+        solved: false
+      };
+
+      const lane = document.getElementById('act3-ruler-lane');
+      lane.innerHTML = `<div class="ruler-lane-placeholder">아래에서 마법 자를 고르고 [재어보기]를 누르면 여기에 자가 놓여요!</div>`;
+
+      const banner = document.getElementById('act3-banner');
+      banner.className = 'instruction-banner info';
+      banner.textContent = `전체 길이 ${Q}칸인 물체를 정확히 ${targetM}번만 재려면 몇 칸짜리 마법 자가 필요할까요? 자를 고르고 [재어보기]를 눌러 보세요!`;
+
+      renderAct3Screen();
+    }
+
+    function selectAct3Ruler(u) {
+      if (act3State.isAnimating) return;
+      clearAct3Timers();
+      act3State.selectedU = u;
+      act3State.prediction = null;
+
+      const lane = document.getElementById('act3-ruler-lane');
+      lane.innerHTML = `<div class="ruler-lane-placeholder">📏 ${u}칸짜리 마법 자를 골랐어요! [재어보기] 버튼을 눌러 ${act3State.targetM}번 놓아 볼까요?</div>`;
+
+      const banner = document.getElementById('act3-banner');
+      banner.className = 'instruction-banner info';
+      banner.textContent = `📏 ${u}칸짜리 마법 자를 선택했어요! 결과를 예상해 본 뒤 [재어보기] 버튼을 눌러 보세요.`;
+
+      renderAct3Screen();
+    }
+
+    function setAct3Prediction(predChoice) {
+      act3State.prediction = predChoice;
+      renderAct3Screen();
+    }
+
+    function resetAct3Attempt() {
+      clearAct3Timers();
+      act3State.selectedU = null;
+      act3State.prediction = null;
+      act3State.isAnimating = false;
+
+      const lane = document.getElementById('act3-ruler-lane');
+      lane.innerHTML = `<div class="ruler-lane-placeholder">아래에서 다른 마법 자를 골라 [재어보기]를 눌러 보세요!</div>`;
+
+      const banner = document.getElementById('act3-banner');
+      banner.className = 'instruction-banner info';
+      banner.textContent = '다른 마법 자를 골라서 다시 실험해 볼까요?';
+
+      renderAct3Screen();
+    }
+
+    function runAct3MeasurementSimulation() {
+      if (act3State.selectedU === null || act3State.isAnimating) return;
+      clearAct3Timers();
+
+      const { Q, targetM, selectedU, options } = act3State;
+      const colorIdx = Math.max(0, options.indexOf(selectedU));
+      act3State.isAnimating = true;
+      renderAct3Screen();
+
+      const lane = document.getElementById('act3-ruler-lane');
+      lane.innerHTML = '';
+
+      // Animate placing the selected ruler exactly targetM times
+      for (let step = 1; step <= targetM; step++) {
+        const tId = setTimeout(() => {
+          const seg = createProportionalRulerSegment(
+            selectedU,
+            Q,
+            step,
+            colorIdx,
+            `${step}번 (${selectedU}칸)`
+          );
+          lane.appendChild(seg);
+
+          if (step === targetM) {
+            act3State.isAnimating = false;
+            const totalCovered = selectedU * targetM;
+            const banner = document.getElementById('act3-banner');
+
+            if (totalCovered === Q) {
+              act3State.solved = true;
+              banner.className = 'instruction-banner success';
+              banner.textContent = `🎉 "이 자를 ${targetM}번 사용하면 전체 길이가 딱 맞네!" (${selectedU}칸 × ${targetM}번 = ${Q}칸)`;
+            } else if (totalCovered < Q) {
+              banner.className = 'instruction-banner encourage';
+              banner.textContent = `🔍 ${selectedU}칸짜리 자를 ${targetM}번 놓았더니 ${totalCovered}칸까지만 닿아서 ${Q - totalCovered}칸이 모자라네요! 더 긴 자를 골라 볼까요?`;
+            } else {
+              banner.className = 'instruction-banner encourage';
+              banner.textContent = `🔍 ${selectedU}칸짜리 자를 ${targetM}번 놓았더니 ${totalCovered}칸이 되어 물체(${Q}칸)보다 ${totalCovered - Q}칸 더 넘어가 버렸어요! 더 짧은 자를 골라 볼까요?`;
+            }
+            renderAct3Screen();
+          }
+        }, (step - 1) * 340);
+        act3TimerIds.push(tId);
+      }
+    }
+
+    function renderAct3Screen() {
+      const { Q, targetM, options, theme, selectedU, prediction, isAnimating } = act3State;
+
+      // Update large prominent cards for Total Length and Target Count
+      document.getElementById('act3-big-length-value').textContent = `${Q}칸`;
+      document.getElementById('act3-big-count-value').textContent = `${targetM}번`;
+      document.getElementById('act3-target-heading').innerHTML =
+        `"전체 길이 <strong style="color:#2563eb;">${Q}칸</strong>인 물체를 자로 정확히 <strong style="color:#e11d48;">${targetM}번</strong> 재고 싶어! 어떤 자가 필요할까?"`;
+
+      document.getElementById('act3-object-name').textContent = `${theme.emoji} ${theme.nameKo}`;
+      document.getElementById('act3-target-badge').textContent = `전체 ${Q}칸 · 목표 ${targetM}번`;
+      document.getElementById('act3-end-label').textContent = `끝 (${Q}칸)`;
+
+      const objBar = document.getElementById('act3-object-bar');
+      objBar.className = `measured-object-bar ${theme.cssClass}`;
+      document.getElementById('act3-object-overlay-text').textContent = `${theme.nameKo} (전체 ${Q}칸)`;
+      renderBaseUnitCells(document.getElementById('act3-base-grid'), Q);
+
+      // Prediction Box visibility
+      const predBox = document.getElementById('act3-prediction-box');
+      if (selectedU !== null) {
+        predBox.style.display = 'block';
+        document.getElementById('act3-pred-prompt').textContent =
+          `🤔 ${selectedU}칸짜리 자로 ${targetM}번 재면 전체 길이(${Q}칸)와 딱 맞을까?`;
+        document.getElementById('act3-pred-fit').className =
+          `pred-chip ${prediction === '딱 맞을 것 같아!' ? 'active' : ''}`;
+        document.getElementById('act3-pred-short').className =
+          `pred-chip ${prediction === '모자랄 것 같아!' ? 'active' : ''}`;
+        document.getElementById('act3-pred-long').className =
+          `pred-chip ${prediction === '넘어갈 것 같아!' ? 'active' : ''}`;
+      } else {
+        predBox.style.display = 'none';
+      }
+
+      // Measure Button
+      const measureBtn = document.getElementById('act3-btn-measure');
+      const measureBtnText = document.getElementById('act3-btn-measure-text');
+      measureBtn.disabled = selectedU === null || isAnimating;
+      measureBtnText.textContent =
+        selectedU === null
+          ? '먼저 아래에서 마법 자를 골라 주세요'
+          : isAnimating
+          ? `${selectedU}칸 자로 ${targetM}번 재는 중...`
+          : `${selectedU}칸 자로 ${targetM}번 재어보기!`;
+
+      // Render 5 Proportional Ruler Options (Do NOT highlight correct option!)
+      const optionsContainer = document.getElementById('act3-ruler-options');
+      optionsContainer.innerHTML = '';
+
+      options.forEach((rulerU, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.id = `act3-select-ruler-${rulerU}`;
+        btn.className = `ruler-option-row ${selectedU === rulerU ? 'selected' : ''}`;
+        btn.onclick = () => selectAct3Ruler(rulerU);
+
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'ruler-option-label';
+        labelDiv.innerHTML = `<span>📏 ${rulerU}칸 마법 자</span>`;
+
+        const trackDiv = document.createElement('div');
+        trackDiv.className = 'ruler-option-scale-track';
+
+        const barDiv = document.createElement('div');
+        barDiv.className = `ruler-option-bar ruler-color-${idx % 5}`;
+        barDiv.style.width = `${(rulerU / Q) * 100}%`;
+        barDiv.textContent = `${rulerU}칸`;
+
+        const ticksWrap = document.createElement('div');
+        ticksWrap.className = 'ruler-internal-ticks';
+        for (let t = 0; t < rulerU; t++) {
+          const tick = document.createElement('div');
+          tick.className = 'ruler-tick-cell';
+          ticksWrap.appendChild(tick);
+        }
+        barDiv.appendChild(ticksWrap);
+
+        trackDiv.appendChild(barDiv);
+        btn.appendChild(labelDiv);
+        btn.appendChild(trackDiv);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    // Initialize all three activities on load
+    window.addEventListener('DOMContentLoaded', () => {
+      generateAct1Round();
+      generateAct2Round();
+      generateAct3Round();
+    });
+  </script>
+</body>
+</html>
