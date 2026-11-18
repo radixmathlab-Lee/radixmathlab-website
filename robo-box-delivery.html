@@ -105,12 +105,12 @@
 
     <header class="relative z-20 px-4 pt-3 pb-1 flex flex-wrap items-center justify-between gap-2 max-w-6xl mx-auto w-full">
       <div class="flex items-center gap-2">
-        <!-- Back to Lee's Math Lab Home Button -->
+        <!-- High-visibility Back Button -->
         <a
           href="./index.html"
-          class="px-3 py-2 rounded-2xl bg-white/95 hover:bg-white border-2 border-white shadow-md font-black text-xs sm:text-sm text-slate-800 flex items-center gap-1.5 transition active:scale-95"
+          class="px-4 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-500 border-2 border-indigo-200 shadow-[0_4px_0_#312e81] font-black text-xs sm:text-sm text-white flex items-center gap-1.5 transition active:translate-y-0.5"
         >
-          <span>🏠</span> <span>Math Lab</span>
+          <span>⬅️</span> <span>뒤로 가기</span>
         </a>
 
         <div class="flex items-center gap-1.5 bg-white/90 backdrop-blur-xs p-1.5 rounded-2xl shadow-md border-2 border-white">
@@ -156,7 +156,7 @@
         <div id="box-cards-container" class="flex flex-col gap-2"></div>
       </section>
 
-      <section class="col-span-7 sm:col-span-3 flex flex-col items-center justify-end h-full pb-6 relative">
+      <section class="col-span-7 sm:col-span-3 flex flex-col items-center justify-center relative">
         <div id="bot-bubble" class="mb-2 px-3.5 py-1.5 rounded-2xl bg-white border-2 border-sky-400 shadow-md font-black text-xs sm:text-sm text-center text-slate-800 relative">
           <span id="bot-bubble-text">상자를 톡! 눌러봐! 👇</span>
           <div class="w-3 h-3 bg-white border-r-2 border-b-2 border-sky-400 rotate-45 absolute -bottom-1.5 left-1/2 -translate-x-1/2"></div>
@@ -187,44 +187,120 @@
         </div>
       </section>
 
-      <section class="col-span-12 sm:col-span-5 flex flex-col justify-end h-full pb-2">
-        <div id="truck-wrapper" class="relative w-full transition-transform">
-          <div class="bg-white border-4 border-slate-800 rounded-3xl p-3 sm:p-4 shadow-2xl relative">
-            <div class="flex items-center justify-between gap-2 pb-2 mb-2 border-b-2 border-slate-100">
-              <div class="flex items-center gap-2">
-                <span class="text-2xl">🚛</span>
-                <div class="flex items-baseline gap-1.5">
-                  <span class="text-xs font-extrabold text-slate-400">실은 개수</span>
-                  <span id="truck-total-num" class="text-2xl sm:text-3xl font-black text-blue-600 tabular-nums">0</span>
+      <section class="col-span-12 sm:col-span-5 flex flex-col justify-center">
+        <div id="truck-wrapper" class="relative w-full transition-transform pb-7">
+
+          <!-- Top Roof Sign -->
+          <div class="flex items-end pl-4 -mb-1 relative z-10">
+            <div class="flex items-center gap-2 bg-amber-400 border-4 border-b-0 border-slate-800 rounded-t-2xl px-4 py-1 shadow-md">
+              <span class="w-3 h-3 rounded-full bg-red-500 animate-pulse border border-slate-900"></span>
+              <span class="text-xs sm:text-sm font-black text-slate-900 tracking-tight">ROBO EXPRESS 택배차</span>
+            </div>
+          </div>
+
+          <!-- Complete Truck Body: [Left: Cargo Container] + [Right: Attached Truck Cab] -->
+          <div class="flex items-end relative">
+
+            <!-- Rear Taillights & Bumpers (Far Left) -->
+            <div class="absolute -left-2.5 top-10 w-2.5 h-8 bg-red-500 border-2 border-slate-800 rounded-l-md z-10"></div>
+            <div class="absolute -left-2.5 bottom-14 w-2.5 h-6 bg-orange-400 border-2 border-slate-800 rounded-l-md z-10"></div>
+            <div class="absolute -left-3.5 bottom-3 w-3.5 h-6 bg-slate-300 border-2 border-slate-800 rounded-l-lg z-10"></div>
+
+            <!-- 1. Cargo Container Box -->
+            <div class="flex-1 bg-amber-400 border-4 border-slate-800 rounded-l-3xl rounded-tr-2xl p-2.5 sm:p-3 shadow-2xl relative z-10">
+              <div class="bg-white border-3 border-slate-800 rounded-2xl p-2.5 sm:p-3">
+                <!-- Cargo Header: Loaded Count & Controls -->
+                <div class="flex items-center justify-between gap-2 pb-2 mb-2 border-b-2 border-slate-100">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-xl">📦</span>
+                    <div class="flex items-baseline gap-1.5">
+                      <span class="text-xs font-extrabold text-slate-500">실은 개수</span>
+                      <span id="truck-total-num" class="text-2xl sm:text-3xl font-black text-blue-600 tabular-nums">0</span>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-1">
+                    <button onclick="toggleTotalHint()" id="eye-btn" title="숫자 숨기기/보기" class="px-2 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-black">
+                      👀 숫자
+                    </button>
+                    <button onclick="clearTruck()" title="비우기" class="px-2 py-1 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-600 text-xs font-black">
+                      🗑️ 비우기
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 5 Cargo Slots -->
+                <div id="truck-cargo-rows" class="space-y-1.5 min-h-[246px] flex flex-col justify-between bg-slate-50 rounded-xl p-2 border-2 border-dashed border-slate-300"></div>
+
+                <!-- Bottom Action Bar inside Truck -->
+                <div class="mt-2.5 flex items-center justify-between gap-2">
+                  <div class="text-[11px] font-bold text-slate-400 leading-tight">
+                    💡 상자를 누르면 빠져요
+                  </div>
+                  <button onclick="shipOrder()" class="flex-1 py-2.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-black text-sm sm:text-base shadow-[0_4px_0_#059669] transition flex items-center justify-center gap-1">
+                    <span>🚚 부릉부릉 출발!</span>
+                  </button>
                 </div>
               </div>
+            </div>
 
-              <div class="flex items-center gap-1.5">
-                <button onclick="toggleTotalHint()" id="eye-btn" title="숫자 숨기기/보기" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-black">
-                  👀 숫자
-                </button>
-                <button onclick="clearTruck()" title="비우기" class="px-2.5 py-1 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-600 text-xs font-black">
-                  🗑️ 비우기
-                </button>
+            <!-- 2. Attached Truck Cab (운전석 + 앞유리 + 헤드라이트 + 범퍼) -->
+            <div class="w-16 sm:w-20 shrink-0 -ml-1 flex flex-col justify-end relative z-0">
+              <!-- Flashing Roof Beacon -->
+              <div class="w-6 h-3.5 mx-auto bg-amber-500 border-2 border-b-0 border-slate-800 rounded-t-full shadow-[0_0_10px_#f59e0b]"></div>
+
+              <!-- Upper Cab & Sloped Windshield -->
+              <div class="bg-blue-600 border-4 border-l-0 border-slate-800 rounded-tr-[28px] rounded-br-2xl h-64 sm:h-72 flex flex-col justify-between p-2 relative shadow-xl">
+                <!-- Sloped Windshield Window -->
+                <div class="w-full h-24 bg-gradient-to-br from-sky-100 via-sky-200 to-sky-300 border-3 border-slate-800 rounded-tr-2xl rounded-bl-lg relative overflow-hidden flex items-end justify-center pb-1">
+                  <!-- Glass Glare -->
+                  <div class="absolute -top-2 -left-2 w-8 h-16 bg-white/45 rotate-12"></div>
+                  <!-- Cute Driver / Steering Wheel -->
+                  <div class="text-lg leading-none select-none">🤖</div>
+                </div>
+
+                <!-- Cab Door Handle & Stripe -->
+                <div class="space-y-1.5 my-auto">
+                  <div class="w-5 h-2 rounded-full bg-slate-800 ml-1"></div>
+                  <div class="w-full h-3 bg-amber-400 border-y-2 border-slate-800"></div>
+                </div>
+
+                <!-- Front Grille & Glowing Headlight -->
+                <div class="flex items-center justify-end gap-1 pb-2">
+                  <div class="flex flex-col gap-1 flex-1">
+                    <div class="h-1 bg-slate-800/60 rounded-full"></div>
+                    <div class="h-1 bg-slate-800/60 rounded-full"></div>
+                  </div>
+                  <div class="w-4 h-7 bg-yellow-200 border-2 border-slate-800 rounded-r-lg shadow-[8px_0_16px_rgba(253,224,71,0.95)]"></div>
+                </div>
+
+                <!-- Front Chrome Bumper -->
+                <div class="absolute -right-2.5 bottom-2 w-3.5 h-6 bg-slate-300 border-2 border-slate-800 rounded-r-lg"></div>
               </div>
             </div>
 
-            <div id="truck-cargo-rows" class="space-y-1.5 min-h-[260px] flex flex-col justify-between bg-slate-50 rounded-2xl p-2.5 border-2 border-dashed border-slate-300"></div>
-
-            <div class="mt-3 flex items-center justify-between gap-3">
-              <div class="text-xs font-bold text-slate-400">
-                💡 실은 상자를 누르면 빠져요
+            <!-- 3. Realistic Round Truck Tires & Hubcaps Underneath -->
+            <div class="absolute -bottom-7 left-6 right-3 flex justify-between items-center pointer-events-none z-20">
+              <!-- Rear Tire 1 -->
+              <div class="w-14 h-14 rounded-full bg-slate-800 border-4 border-slate-950 shadow-lg flex items-center justify-center">
+                <div class="w-7 h-7 rounded-full bg-slate-300 border-2 border-slate-500 flex items-center justify-center">
+                  <div class="w-2.5 h-2.5 rounded-full bg-slate-700"></div>
+                </div>
               </div>
-              <button onclick="shipOrder()" class="flex-1 py-3 px-5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-black text-lg sm:text-xl shadow-[0_5px_0_#059669] transition flex items-center justify-center gap-2">
-                <span>🚚 부릉부릉 출발!</span>
-              </button>
+              <!-- Rear Tire 2 -->
+              <div class="w-14 h-14 rounded-full bg-slate-800 border-4 border-slate-950 shadow-lg flex items-center justify-center">
+                <div class="w-7 h-7 rounded-full bg-slate-300 border-2 border-slate-500 flex items-center justify-center">
+                  <div class="w-2.5 h-2.5 rounded-full bg-slate-700"></div>
+                </div>
+              </div>
+              <!-- Front Cab Tire -->
+              <div class="w-14 h-14 rounded-full bg-slate-800 border-4 border-slate-950 shadow-lg flex items-center justify-center">
+                <div class="w-7 h-7 rounded-full bg-amber-300 border-2 border-amber-600 flex items-center justify-center">
+                  <div class="w-2.5 h-2.5 rounded-full bg-slate-800"></div>
+                </div>
+              </div>
             </div>
 
-            <div class="-bottom-5 left-8 right-8 flex justify-between pointer-events-none mt-2 pt-1">
-              <div class="w-12 h-6 rounded-b-full bg-slate-800 border-4 border-slate-400"></div>
-              <div class="w-12 h-6 rounded-b-full bg-slate-800 border-4 border-slate-400"></div>
-              <div class="w-12 h-6 rounded-b-full bg-slate-800 border-4 border-slate-400"></div>
-            </div>
           </div>
         </div>
       </section>
